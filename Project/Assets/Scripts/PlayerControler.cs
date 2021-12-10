@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public class PlayerControler : MonoBehaviour
 {
     public Rigidbody rb;
+    public float gravityScale; // Amount of gravitational force
     public float moveSpeed; // The speed the ball moves
+    public float jumpForce; // The speed the ball jumps
     public Text countText; // The text (count) to be shown 
     public Text winText; // The text to be shown when game finishes
 
@@ -30,29 +32,18 @@ public class PlayerControler : MonoBehaviour
         sound = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        ProcessInputs();
-    }
-
     private void FixedUpdate()
-    {
-        // Movement
-        Move();
-    }
-
-    // Gets the input for movement direction
-    private void ProcessInputs()
     {
         xInput = Input.GetAxis("Horizontal");
         zInput = Input.GetAxis("Vertical");
-    }
 
-    // Moves the player based on the movement direction
-    private void Move()
-    {
         rb.AddForce(new Vector3(xInput, 0.0f, zInput) * moveSpeed);
+
+        if (Input.GetKeyDown(KeyCode.Space))//&& characterController.isGrounded)
+        {
+            rb.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(Physics.gravity * (gravityScale - 1) * rb.mass);
+        }
     }
 
     // Collision detection to deactivate the PickUp object we touched and make sound
