@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class PlayerControler : MonoBehaviour
 {
     public Rigidbody rb;
-    public float gravityScale; // Amount of gravitational force
     public float moveSpeed; // The speed the ball moves
     public float jumpForce; // The speed the ball jumps
     public Text countText; // The text (count) to be shown 
@@ -39,10 +38,10 @@ public class PlayerControler : MonoBehaviour
 
         rb.AddForce(new Vector3(xInput, 0.0f, zInput) * moveSpeed);
 
-        if (Input.GetKeyDown(KeyCode.Space))//&& characterController.isGrounded)
+        // Jump if ball touches the ground
+        if (Input.GetKeyDown(KeyCode.Space) && rb.velocity.y == 0)
         {
             rb.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
-            rb.AddForce(Physics.gravity * (gravityScale - 1) * rb.mass);
         }
     }
 
@@ -50,7 +49,7 @@ public class PlayerControler : MonoBehaviour
     // and lose the game if we touched a DoNotPickUp object and make sound
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("PickUp"))
+        if (other.gameObject.CompareTag("PickUp"))
         {
             sound.clip = collectPickUp; // Set sound value
             sound.Play(); // Play sound
@@ -63,7 +62,7 @@ public class PlayerControler : MonoBehaviour
                 winText.text = "You Win!";
             }
         }
-        else if(other.gameObject.CompareTag("DoNotPickUp"))
+        else if (other.gameObject.CompareTag("DoNotPickUp"))
         {
             sound.clip = collectDoNotPickUp; // Set sound value
             sound.Play(); // Play sound
